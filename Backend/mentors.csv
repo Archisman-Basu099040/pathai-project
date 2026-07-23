@@ -1,0 +1,16 @@
+mentor_id,mentor_name,subject,grade_range,languages,specialization,experience_years,rating,total_sessions,status,bio
+MNT-101,Dr. Ananya Sharma,math,6-12,"English, Hindi",Algebra & Calculus,12,4.9,1450,free,Former university lecturer specializing in visual mathematics and anxiety-free algebra.
+MNT-102,Mr. Rohan Chatterjee,math,5-10,"English, Bengali",Vedic Math & Geometry,8,4.8,980,free,Passionate about making geometry and arithmetic intuitive through real-world puzzles.
+MNT-103,Ms. Priya Rao,math,5-8,"English, Hindi",Fractions & Number Systems,6,4.9,670,free,Patience-first mentor focused on building rock-solid foundations for middle school math.
+MNT-104,Mr. David Thomas,math,9-12,English,Trigonometry & Calculus,15,5.0,2100,busy,Expert competitive exam coach helping high schoolers master advanced theorems.
+MNT-105,Ms. Sneha Mukherjee,math,6-10,"English, Bengali, Hindi",Statistics & Probability,7,4.7,540,free,Data scientist turned educator who teaches probability through games and experiments.
+MNT-201,Dr. Tariq Iqbal,science,6-12,"English, Hindi",Physics & Quantum Mechanics,14,4.9,1890,free,Physics PhD dedicated to explaining the laws of the universe with simple household demos.
+MNT-202,Ms. Debosmita Sen,science,5-10,"English, Bengali",Biology & Botany,9,4.9,1120,free,Botanist and educator who turns cell biology and ecosystems into fascinating stories.
+MNT-203,Mr. Vikram Verma,science,8-12,"English, Hindi",Organic & Inorganic Chemistry,11,4.8,1340,free,Demystifying chemical equations and atomic structures with interactive visualizations.
+MNT-204,Ms. Sarah Jenkins,science,5-9,English,Earth Science & Astronomy,5,4.8,420,busy,Space enthusiast bringing the wonders of the solar system and geology to young learners.
+MNT-205,Mr. Arindam Ghosh,science,7-12,"English, Bengali, Hindi",Genetics & Human Anatomy,10,5.0,1600,free,Medical researcher simplifying complex biological systems and genetics for aspiring doctors.
+MNT-301,Ms. Sunita Devi,english,5-12,"English, Hindi",Grammar & Creative Writing,16,5.0,2400,free,Published author and veteran teacher specializing in essay structure and vocabulary building.
+MNT-302,Mr. Alok Banerjee,english,6-10,"English, Bengali",Literature & Comprehension,8,4.8,890,free,Making classic literature and poetry accessible and exciting through modern analogies.
+MNT-303,Ms. Elena Rostova,english,5-11,English,Phonics & Public Speaking,7,4.9,750,free,"Speech coach focused on confidence building, clear diction, and persuasive writing."
+MNT-304,Mr. Kabir Mehta,english,8-12,"English, Hindi",Advanced Rhetoric & Debating,9,4.7,680,busy,"National debate champion teaching students how to formulate logical, winning arguments."
+MNT-305,Ms. Poulomi Dutta,english,5-9,"English, Bengali, Hindi",Reading Comprehension & Syntax,6,4.9,610,free,Helping bilingual students master complex English syntax and critical reading skills.

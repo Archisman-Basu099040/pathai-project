@@ -1,0 +1,10 @@
+topic_id,subject,grade_level,topic_name,difficulty_tier,prerequisite,learning_objective
+TOP-M1,math,6,Fractions & Decimals,foundational,Basic Division,Understand numerator/denominator relationships and decimal placement.
+TOP-M2,math,8,Linear Equations,intermediate,Algebraic Expressions,Solve for single variables using inverse operations.
+TOP-M3,math,10,Quadratic Equations,advanced,Linear Equations,Apply the quadratic formula and understand parabolic roots.
+TOP-S1,science,6,Photosynthesis,foundational,Plant Cell Basics,Explain how light energy converts carbon dioxide and water into glucose.
+TOP-S2,science,8,Newton's Laws of Motion,intermediate,Speed and Velocity,"Analyze inertia, acceleration (F=ma), and action-reaction forces."
+TOP-S3,science,10,Atomic Structure & Valency,advanced,Periodic Table Basics,Calculate electron configurations and predict chemical bonding.
+TOP-E1,english,6,Parts of Speech,foundational,Basic Sentence Structure,"Identify nouns, verbs, adjectives, adverbs, and conjunctions in context."
+TOP-E2,english,8,Active vs. Passive Voice,intermediate,Verb Tenses,Transform sentence structures to emphasize subject or action.
+TOP-E3,english,10,Critical Essay Structuring,advanced,Paragraph Transitions,"Construct thesis statements, evidence body paragraphs, and syntheses."

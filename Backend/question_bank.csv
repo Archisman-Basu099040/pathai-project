@@ -1,0 +1,6 @@
+question_id,subject,topic_name,difficulty,question_text,correct_answer,hint
+Q-1001,math,Fractions & Decimals,foundational,"If you eat 3 slices of an 8-slice pizza, what fraction is left?",5/8,Subtract the eaten slices from the total number of slices.
+Q-1002,math,Linear Equations,intermediate,Solve for x: 3x + 7 = 22,x = 5,"Subtract 7 from both sides first, then divide by 3."
+Q-2001,science,Photosynthesis,foundational,What green pigment in leaves absorbs sunlight for photosynthesis?,Chlorophyll,It starts with 'Chlo-' and gives plants their green color.
+Q-2002,science,Newton's Laws of Motion,intermediate,Which of Newton's laws is known as the Law of Inertia?,First Law,An object at rest stays at rest unless acted upon by an unbalanced force.
+Q-3001,english,Active vs. Passive Voice,intermediate,Change to passive voice: 'The chef cooked a delicious meal.',A delicious meal was cooked by the chef.,Make the object ('a delicious meal') the subject of the new sentence.
