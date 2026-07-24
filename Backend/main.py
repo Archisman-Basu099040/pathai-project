@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import random
 from typing import TypedDict, Literal
 from dotenv import load_dotenv
 
@@ -101,8 +102,9 @@ def mentor_availability_node(state: StudentState) -> StudentState:
     available = mentors_df[(mentors_df["subject"] == subject) & (mentors_df["status"] == "free")]
     
     if not available.empty:
-        mentor = available.iloc[0]["mentor_name"]
-        mentors_df.loc[mentors_df["mentor_name"] == mentor, "status"] = "busy"
+        # Randomly pick any free mentor matching the subject instead of always picking the first one
+        random_mentor_row = available.sample(n=1).iloc[0]
+        mentor = random_mentor_row["mentor_name"]
     else:
         mentor = "No mentor currently free — student queued for next available slot"
     return {**state, "assigned_mentor": mentor}
