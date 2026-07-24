@@ -117,6 +117,14 @@ export default function App() {
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}
+              className="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white transition hover:border-cyan-300/50 hover:bg-white/10"
+            >
+              {themeMode === 'dark' ? 'Switch to light' : 'Switch to dark'}
+            </button>
+
+            <button
+              type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               className="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm font-semibold text-white md:hidden"
             >
