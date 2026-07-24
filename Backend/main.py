@@ -1,6 +1,7 @@
 import os
 import random
 import pandas as pd
+import random
 from typing import TypedDict, Literal
 from dotenv import load_dotenv
 

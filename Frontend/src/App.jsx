@@ -220,8 +220,6 @@ export default function App() {
 
           <nav className="hidden md:flex items-center gap-6 text-sm text-slate-300">
             <a href="#features" className="hover:text-white">Features</a>
-            <a href="#testimonials" className="hover:text-white">Testimonials</a>
-            <a href="#pricing" className="hover:text-white">Pricing</a>
             <a href="#generator" className="hover:text-white">Generator</a>
           </nav>
 
@@ -240,8 +238,6 @@ export default function App() {
           <nav className="mb-6 rounded-[24px] border border-white/10 bg-white/5 p-4 md:hidden">
             <div className="flex flex-col gap-3 text-sm text-slate-200">
               <a href="#features" onClick={() => setMenuOpen(false)}>Features</a>
-              <a href="#testimonials" onClick={() => setMenuOpen(false)}>Testimonials</a>
-              <a href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</a>
               <a href="#generator" onClick={() => setMenuOpen(false)}>Generator</a>
             </div>
           </nav>
@@ -364,7 +360,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="features" className="reveal py-10 lg:py-14">
+        <section id="features" className="reveal py-10 lg:py-14 scroll-mt-28">
           <div className="mb-8 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Why students love it</p>
             <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">A landing page built around clarity, trust, and momentum.</h2>
@@ -381,145 +377,6 @@ export default function App() {
           </div>
         </section>
 
-        <section id="testimonials" className="reveal py-10 lg:py-14">
-          <div className="mb-8 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">Testimonials</p>
-            <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">Real feedback from learners and educators.</h2>
-          </div>
-
-          <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div>
-                <p className="text-lg font-semibold text-white">{testimonials[activeTestimonial].name}</p>
-                <p className="text-sm text-slate-400">{testimonials[activeTestimonial].role}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveTestimonial((activeTestimonial - 1 + testimonials.length) % testimonials.length)}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white"
-                >
-                  ←
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTestimonial((activeTestimonial + 1) % testimonials.length)}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white"
-                >
-                  →
-                </button>
-              </div>
-            </div>
-
-            <div className="rounded-[24px] border border-white/10 bg-slate-950/50 p-5">
-              <div className="mb-4 text-3xl text-emerald-300">“</div>
-              <p className="text-base leading-7 text-slate-200">{testimonials[activeTestimonial].quote}</p>
-            </div>
-          </div>
-        </section>
-
-        <section id="pricing" className="reveal py-10 lg:py-14">
-          <div className="mb-8 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Pricing</p>
-            <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">Choose the plan that fits your learning momentum.</h2>
-          </div>
-
-          <div className="mb-6 flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 p-1">
-            <button
-              type="button"
-              onClick={() => setBillingCycle('monthly')}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                billingCycle === 'monthly' ? 'bg-emerald-400 text-slate-950' : 'text-slate-300'
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              type="button"
-              onClick={() => setBillingCycle('yearly')}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                billingCycle === 'yearly' ? 'bg-emerald-400 text-slate-950' : 'text-slate-300'
-              }`}
-            >
-              Yearly
-            </button>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-3">
-            {pricingPlans.map((plan) => (
-              <article
-                key={plan.name}
-                className={`rounded-[28px] border p-6 backdrop-blur-xl ${
-                  plan.featured
-                    ? 'border-emerald-300/40 bg-gradient-to-b from-emerald-400/10 to-cyan-400/10 shadow-xl shadow-emerald-500/10'
-                    : 'border-white/10 bg-white/5'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-                  {plan.featured && (
-                    <span className="rounded-full bg-emerald-300 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-slate-950">
-                      Most popular
-                    </span>
-                  )}
-                </div>
-                <div className="mt-4 flex items-end gap-1">
-                  <span className="text-4xl font-black text-white">{billingCycle === 'monthly' ? plan.monthly : plan.yearly}</span>
-                  <span className="pb-1 text-sm text-slate-400">{billingCycle === 'monthly' ? '/month' : '/year'}</span>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-slate-300">{plan.description}</p>
-                <ul className="mt-5 space-y-3 text-sm text-slate-200">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2">
-                      <span className="text-emerald-300">✓</span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href="#generator"
-                  className={`mt-6 inline-flex rounded-full px-4 py-2 text-sm font-bold transition ${
-                    plan.featured
-                      ? 'bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950'
-                      : 'border border-white/15 bg-white/5 text-white hover:bg-white/10'
-                  }`}
-                >
-                  Choose {plan.name}
-                </a>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="reveal py-10 lg:py-12">
-          <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Trusted by modern learning teams</p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-              {logoCloud.map((brand) => (
-                <div key={brand} className="logo-pill rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-center text-sm font-semibold text-slate-200">
-                  {brand}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="faq" className="reveal py-10 lg:py-14">
-          <div className="mb-8 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">FAQ</p>
-            <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">Everything learners and parents want to know.</h2>
-          </div>
-
-          <div className="space-y-3">
-            {faqItems.map((item) => (
-              <details key={item.question} className="faq-card rounded-[22px] border border-white/10 bg-white/5 p-4 backdrop-blur-xl" open={item.question === 'Who is PathAI built for?'}>
-                <summary className="cursor-pointer list-none text-base font-semibold text-white">{item.question}</summary>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{item.answer}</p>
-              </details>
-            ))}
-          </div>
-        </section>
-
         <section className="reveal py-10 lg:py-14">
           <div className="cta-banner rounded-[32px] border border-emerald-300/20 bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-sky-400/15 p-8 text-center backdrop-blur-xl">
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-300">Start now</p>
@@ -531,7 +388,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="generator" className="reveal py-8 lg:py-12">
+        <section id="generator" className="reveal py-8 lg:py-12 scoll-mt-28">
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">Launch the journey</p>
@@ -662,8 +519,7 @@ export default function App() {
               <p className="font-semibold text-white">Company</p>
               <div className="mt-2 space-y-2">
                 <a href="#features" className="block hover:text-white">Features</a>
-                <a href="#testimonials" className="block hover:text-white">Testimonials</a>
-                <a href="#pricing" className="block hover:text-white">Pricing</a>
+                <a href="#generator" className="block hover:text-white">Generator</a>
               </div>
             </div>
 
