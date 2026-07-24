@@ -106,7 +106,7 @@ export default function App() {
       <div className="absolute bottom-[-120px] right-[-80px] h-96 w-96 rounded-full bg-cyan-500/20 blur-3xl" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-6">
-        <header className="sticky top-4 z-50 mb-10 flex items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
+        <header className="sticky top-4 z-50 mb-10 flex items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl relative">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 text-lg font-bold text-slate-950">P</div>
             <div>
@@ -115,9 +115,9 @@ export default function App() {
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm text-slate-300">
-            <a href="#features" className="hover:text-white">Features</a>
-            <a href="#generator" className="hover:text-white">Generator</a>
+          <nav className="hidden md:flex items-center gap-6 text-sm text-slate-300 absolute left-1/2 -translate-x-1/2">
+            <a href="#features" className="hover:text-white transition">Features</a>
+            <a href="#generator" className="hover:text-white transition">Generator</a>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -194,7 +194,9 @@ export default function App() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-slate-300">Current gap</p>
-                      <p className="text-xl font-bold text-white">Fractions fundamentals</p>
+                      <p className="text-xl font-bold text-white">
+                        {result ? `${result.level.replace('_', ' ')}: ${formData.topic || 'General'}` : '--'}
+                      </p>
                     </div>
                     <span className="text-2xl">📘</span>
                   </div>
@@ -203,7 +205,9 @@ export default function App() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Confidence</p>
-                    <p className="mt-2 text-3xl font-black text-white">78%</p>
+                    <p className="mt-2 text-3xl font-black text-white">
+                      {result ? `${result.confidence}%` : '--'}
+                    </p>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Mentor</p>
