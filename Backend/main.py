@@ -136,9 +136,6 @@ builder.add_node("advanced", advanced_node)
 builder.add_node("mentor_check", mentor_availability_node)
 builder.add_node("quiz", quiz_node)
 builder.add_node("finalize_confidence", finalize_confidence_node)
-builder.add_edge("mentor_check", "quiz")
-builder.add_edge("quiz", "finalize_confidence")
-builder.add_edge("finalize_confidence", END)
 
 builder.set_entry_point("router")
 builder.add_conditional_edges("router", route_decision, {
@@ -148,8 +145,11 @@ builder.add_conditional_edges("router", route_decision, {
 })
 for path in ("foundational", "grade_level", "advanced"):
     builder.add_edge(path, "mentor_check")
+    
+# Clean linear flow without duplicate overlapping edges
 builder.add_edge("mentor_check", "quiz")
-builder.add_edge("quiz", END)
+builder.add_edge("quiz", "finalize_confidence")
+builder.add_edge("finalize_confidence", END)
 
 graph = builder.compile()
 
@@ -172,6 +172,7 @@ def process_student_intake(request: StudentIntakeRequest):
             "explanation": "",
             "quiz": "",
             "assigned_mentor": "",
+            "confidence": 0,
         }
         return graph.invoke(initial_state)
     except Exception as e:

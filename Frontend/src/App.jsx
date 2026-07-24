@@ -195,7 +195,7 @@ export default function App() {
                     <div>
                       <p className="text-sm text-slate-300">Current gap</p>
                       <p className="text-xl font-bold text-white">
-                        {result ? `${result.level.replace('_', ' ')}: ${formData.topic || 'General'}` : '--'}
+                        {result ? `${result.level.replace('_', ' ')}: ${formData.topic || 'General'}` : 'No active gaps analyzed yet'}
                       </p>
                     </div>
                     <span className="text-2xl">📘</span>
@@ -221,18 +221,14 @@ export default function App() {
                   <div className="mb-2 flex items-center justify-between text-sm text-slate-300">
                     <span>Learning path readiness</span>
                     <span>
-                      {result
-                        ? (result.level === 'foundational' ? '65%' : result.level === 'grade_level' ? '82%' : '95%')
-                        : '92%'}
+                      {result ? `${result.confidence}%` : '--'}
                     </span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-800">
                     <div
                       className="h-2 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-500"
                       style={{
-                        width: result
-                          ? (result.level === 'foundational' ? '65%' : result.level === 'grade_level' ? '82%' : '95%')
-                          : '92%'
+                        width: result ? `${result.confidence}%` : '0%'
                       }}
                     />
                   </div>
