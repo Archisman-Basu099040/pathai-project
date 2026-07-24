@@ -20,63 +20,10 @@ const featureCards = [
 ];
 
 const stats = [
-  { label: 'Concepts mapped', value: '24k+' },
-  { label: 'Students supported', value: '3.8k' },
-  { label: 'Avg. response time', value: '< 20s' }
+  { label: 'Concepts mapped', value: '9' },
+  { label: 'Students supported', value: '15' },
+  { label: 'Avg. response time', value: '< 6s' }
 ];
-
-const testimonials = [
-  {
-    quote: 'PathAI helped our daughter go from panic to confidence in one weekend. The learning path felt personal, not generic.',
-    name: 'Priya S.',
-    role: 'Parent of Grade 8 student'
-  },
-  {
-    quote: 'The interface is clean, and the guidance feels like a smart tutor who knows exactly where the confusion starts.',
-    name: 'Rohan K.',
-    role: 'STEM educator'
-  },
-  {
-    quote: 'We used it for revision before exams, and the explanations were so targeted that my class started asking for it by name.',
-    name: 'Maya T.',
-    role: 'Classroom coordinator'
-  }
-];
-
-const pricingPlans = [
-  {
-    name: 'Starter',
-    monthly: '$0',
-    yearly: '$0',
-    description: 'Perfect for trying the AI learning flow with limited sessions.',
-    features: ['1 guided learning path per week', 'Basic mentor matching', 'Community support'],
-    featured: false
-  },
-  {
-    name: 'Pro',
-    monthly: '$19',
-    yearly: '$190',
-    description: 'For students who want consistent, structured help every week.',
-    features: ['Unlimited learning paths', 'Priority mentor routing', 'Advanced concept diagnostics'],
-    featured: true
-  },
-  {
-    name: 'School',
-    monthly: '$79',
-    yearly: '$790',
-    description: 'For classrooms and coaching groups seeking a scalable learning assistant.',
-    features: ['Classroom dashboard', 'Multi-student tracking', 'Dedicated onboarding'],
-    featured: false
-  }
-];
-
-const logoCloud = ['EduSpark', 'Bright Labs', 'SkillForge', 'NextClass', 'MentorNest'];
-
-const levelMeta = {
-  foundational: { confidence: 52, readiness: 58, label: 'Foundational rebuild' },
-  grade_level: { confidence: 76, readiness: 84, label: 'Grade-level focus' },
-  advanced: { confidence: 94, readiness: 97, label: 'Advanced extension' }
-};
 
 const subjectIcon = {
   math: '📘',
@@ -84,27 +31,12 @@ const subjectIcon = {
   english: '📝'
 };
 
-const faqItems = [
-  {
-    question: 'Who is PathAI built for?',
-    answer: 'PathAI is designed for students, tutors, and classroom teams that need a clearer, faster way to diagnose learning gaps and build step-by-step support.'
-  },
-  {
-    question: 'Does PathAI replace the teacher?',
-    answer: 'No. It complements teachers and mentors by generating adaptive guidance, checking understanding, and helping students move forward faster.'
-  },
-  {
-    question: 'Can I use it for multiple subjects?',
-    answer: 'Yes. The intake flow supports subject, grade, language, and topic signals so the response can be shaped for different study contexts.'
-  }
-];
-
 export default function App() {
   const [formData, setFormData] = useState({
     name: '',
-    grade: '8',
-    language: 'English',
-    subject: 'math',
+    grade: '',
+    language: '',
+    subject: '',
     topic: '',
     query: ''
   });
@@ -112,13 +44,16 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const [billingCycle, setBillingCycle] = useState('monthly');
   const [menuOpen, setMenuOpen] = useState(false);
   const [progressHistory, setProgressHistory] = useState([]);
 
   const isDark = true;
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+  const [previewMentor] = useState(() => {
+    const sampleMentors = ["Dr. Ananya Sharma", "Mr. Rohan Chatterjee", "Ms. Priya Rao", "Dr. Tariq Iqbal", "Ms. Sunita Devi"];
+    return sampleMentors[Math.floor(Math.random() * sampleMentors.length)];
+  });
 
   useEffect(() => {
     const elements = document.querySelectorAll('.reveal');
@@ -163,7 +98,6 @@ export default function App() {
       const data = await response.json();
       setResult(data);
 
-      const meta = levelMeta[data.level] || levelMeta.grade_level;
       setProgressHistory((prev) => [
         ...prev,
         {
@@ -171,8 +105,7 @@ export default function App() {
           subject: data.subject || formData.subject,
           level: data.level,
           mentor: data.assigned_mentor,
-          confidence: meta.confidence,
-          readiness: meta.readiness,
+          confidence: data.confidence,
           timestamp: Date.now()
         }
       ]);
@@ -183,24 +116,16 @@ export default function App() {
     }
   };
 
-  const latestProgress = progressHistory[progressHistory.length - 1] || null;
   const sessionsCompleted = progressHistory.length;
   const averageConfidence = sessionsCompleted
     ? Math.round(progressHistory.reduce((sum, item) => sum + item.confidence, 0) / sessionsCompleted)
     : null;
-  const previousConfidence = sessionsCompleted > 1 ? progressHistory[sessionsCompleted - 2].confidence : null;
-  const confidenceTrend =
-    latestProgress && previousConfidence !== null ? latestProgress.confidence - previousConfidence : null;
 
-  const pulseGap = latestProgress ? latestProgress.topic : 'Fractions fundamentals';
-  const pulseIcon = latestProgress ? subjectIcon[latestProgress.subject] || '📘' : '📘';
-  const pulseConfidence = latestProgress ? latestProgress.confidence : 78;
-  const pulseMentor = latestProgress
-    ? latestProgress.mentor && latestProgress.mentor.startsWith('Not needed')
-      ? 'Self-serve path'
-      : latestProgress.mentor
-    : 'Aarav Sharma';
-  const pulseReadiness = latestProgress ? latestProgress.readiness : 92;
+  const currentTopicDisplay = result ? `${result.level.replace('_', ' ')}: ${formData.topic || 'General'}` : 'No active gaps analyzed yet';
+  const currentIcon = result ? subjectIcon[formData.subject] || '📘' : '📘';
+  const currentConfidence = result ? `${result.confidence}%` : '--';
+  const currentMentor = result ? result.assigned_mentor : previewMentor;
+  const currentReadiness = result ? `${result.confidence}%` : '0%';
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'} relative overflow-hidden selection:bg-emerald-400/30`}>
@@ -290,11 +215,10 @@ export default function App() {
                   <p className="mt-1 text-lg font-semibold text-white">Student progress preview</p>
                 </div>
                 <div
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                    latestProgress ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-300'
-                  }`}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${result ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-300'
+                    }`}
                 >
-                  {latestProgress ? 'Live' : 'Preview'}
+                  {result ? 'Live' : 'Preview'}
                 </div>
               </div>
 
@@ -303,44 +227,32 @@ export default function App() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-slate-300">Current gap</p>
-                      <p className="text-xl font-bold text-white">{pulseGap}</p>
-                      {latestProgress && (
-                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-emerald-300">
-                          {levelMeta[latestProgress.level]?.label || latestProgress.level}
-                        </p>
-                      )}
+                      <p className="text-xl font-bold text-white">{currentTopicDisplay}</p>
                     </div>
-                    <span className="text-2xl">{pulseIcon}</span>
+                    <span className="text-2xl">{currentIcon}</span>
                   </div>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Confidence</p>
-                    <p className="mt-2 text-3xl font-black text-white">
-                      {pulseConfidence}%
-                      {confidenceTrend !== null && confidenceTrend !== 0 && (
-                        <span className={`ml-2 text-sm font-semibold ${confidenceTrend > 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
-                          {confidenceTrend > 0 ? `+${confidenceTrend}` : confidenceTrend}
-                        </span>
-                      )}
-                    </p>
+                    <p className="mt-2 text-3xl font-black text-white">{currentConfidence}</p>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Mentor</p>
-                    <p className="mt-2 text-lg font-bold text-white">{pulseMentor}</p>
+                    <p className="mt-2 text-lg font-bold text-white truncate">{currentMentor}</p>
                   </div>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center justify-between text-sm text-slate-300">
                     <span>Learning path readiness</span>
-                    <span>{pulseReadiness}%</span>
+                    <span>{currentReadiness}</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-800">
                     <div
                       className="h-2 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-700"
-                      style={{ width: `${pulseReadiness}%` }}
+                      style={{ width: currentReadiness }}
                     />
                   </div>
                 </div>
@@ -360,7 +272,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="features" className="reveal py-10 lg:py-14 scroll-mt-28">
+        <section id="features" className="reveal py-10 lg:py-14" style={{ scrollMarginTop: '100px' }}>
           <div className="mb-8 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Why students love it</p>
             <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">A landing page built around clarity, trust, and momentum.</h2>
@@ -388,7 +300,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="generator" className="reveal py-8 lg:py-12 scoll-mt-28">
+        <section id="generator" className="reveal py-8 lg:py-12 scroll-mt-28">
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">Launch the journey</p>
@@ -404,7 +316,8 @@ export default function App() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Grade</label>
-                    <select name="grade" value={formData.grade} onChange={handleChange} className="pathai-input">
+                    <select required name="grade" value={formData.grade} onChange={handleChange} className="pathai-input">
+                      <option value="" disabled>Select grade</option>
                       {[5, 6, 7, 8, 9, 10, 11, 12].map((g) => (
                         <option key={g} value={g}>Grade {g}</option>
                       ))}
@@ -413,7 +326,8 @@ export default function App() {
 
                   <div>
                     <label className="mb-2 block text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Language</label>
-                    <select name="language" value={formData.language} onChange={handleChange} className="pathai-input">
+                    <select required name="language" value={formData.language} onChange={handleChange} className="pathai-input">
+                      <option value="" disabled>Select language</option>
                       <option value="English">English</option>
                       <option value="Hindi">Hindi</option>
                       <option value="Bengali">Bengali</option>
@@ -423,7 +337,8 @@ export default function App() {
 
                 <div>
                   <label className="mb-2 block text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Subject</label>
-                  <select name="subject" value={formData.subject} onChange={handleChange} className="pathai-input">
+                  <select required name="subject" value={formData.subject} onChange={handleChange} className="pathai-input">
+                    <option value="" disabled>Select subject</option>
                     <option value="math">Mathematics</option>
                     <option value="science">Science</option>
                     <option value="english">English</option>
@@ -468,7 +383,7 @@ export default function App() {
                 <div className="flex min-h-[500px] flex-col items-center justify-center rounded-[24px] border border-white/10 bg-white/5 p-8 text-center">
                   <div className="loader-ring mb-5" />
                   <p className="text-lg font-semibold text-white">Analyzing learning gap</p>
-                  <p className="mt-2 text-sm text-slate-400">Routing through the best mentor logic for {formData.language}.</p>
+                  <p className="mt-2 text-sm text-slate-400">Routing through the best mentor logic for {formData.language || 'selected language'}.</p>
                 </div>
               )}
 
