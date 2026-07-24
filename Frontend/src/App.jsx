@@ -72,6 +72,18 @@ const pricingPlans = [
 
 const logoCloud = ['EduSpark', 'Bright Labs', 'SkillForge', 'NextClass', 'MentorNest'];
 
+const levelMeta = {
+  foundational: { confidence: 52, readiness: 58, label: 'Foundational rebuild' },
+  grade_level: { confidence: 76, readiness: 84, label: 'Grade-level focus' },
+  advanced: { confidence: 94, readiness: 97, label: 'Advanced extension' }
+};
+
+const subjectIcon = {
+  math: '📘',
+  science: '🧪',
+  english: '📝'
+};
+
 const faqItems = [
   {
     question: 'Who is PathAI built for?',
@@ -102,10 +114,10 @@ export default function App() {
   const [error, setError] = useState(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [billingCycle, setBillingCycle] = useState('monthly');
-  const [themeMode, setThemeMode] = useState('dark');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [progressHistory, setProgressHistory] = useState([]);
 
-  const isDark = themeMode === 'dark';
+  const isDark = true;
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
@@ -150,12 +162,45 @@ export default function App() {
 
       const data = await response.json();
       setResult(data);
+
+      const meta = levelMeta[data.level] || levelMeta.grade_level;
+      setProgressHistory((prev) => [
+        ...prev,
+        {
+          topic: data.topic || formData.topic,
+          subject: data.subject || formData.subject,
+          level: data.level,
+          mentor: data.assigned_mentor,
+          confidence: meta.confidence,
+          readiness: meta.readiness,
+          timestamp: Date.now()
+        }
+      ]);
     } catch (err) {
       setError(err.message || 'Failed to connect to PathAI backend server.');
     } finally {
       setLoading(false);
     }
   };
+
+  const latestProgress = progressHistory[progressHistory.length - 1] || null;
+  const sessionsCompleted = progressHistory.length;
+  const averageConfidence = sessionsCompleted
+    ? Math.round(progressHistory.reduce((sum, item) => sum + item.confidence, 0) / sessionsCompleted)
+    : null;
+  const previousConfidence = sessionsCompleted > 1 ? progressHistory[sessionsCompleted - 2].confidence : null;
+  const confidenceTrend =
+    latestProgress && previousConfidence !== null ? latestProgress.confidence - previousConfidence : null;
+
+  const pulseGap = latestProgress ? latestProgress.topic : 'Fractions fundamentals';
+  const pulseIcon = latestProgress ? subjectIcon[latestProgress.subject] || '📘' : '📘';
+  const pulseConfidence = latestProgress ? latestProgress.confidence : 78;
+  const pulseMentor = latestProgress
+    ? latestProgress.mentor && latestProgress.mentor.startsWith('Not needed')
+      ? 'Self-serve path'
+      : latestProgress.mentor
+    : 'Aarav Sharma';
+  const pulseReadiness = latestProgress ? latestProgress.readiness : 92;
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'} relative overflow-hidden selection:bg-emerald-400/30`}>
@@ -181,14 +226,6 @@ export default function App() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}
-              className="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white transition hover:border-cyan-300/50 hover:bg-white/10"
-            >
-              {themeMode === 'dark' ? 'Switch to light' : 'Switch to dark'}
-            </button>
-
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -256,7 +293,13 @@ export default function App() {
                   <p className="text-xs uppercase tracking-[0.24em] text-cyan-300">Learning pulse</p>
                   <p className="mt-1 text-lg font-semibold text-white">Student progress preview</p>
                 </div>
-                <div className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300">Live</div>
+                <div
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                    latestProgress ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-300'
+                  }`}
+                >
+                  {latestProgress ? 'Live' : 'Preview'}
+                </div>
               </div>
 
               <div className="space-y-3">
@@ -264,30 +307,56 @@ export default function App() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-slate-300">Current gap</p>
-                      <p className="text-xl font-bold text-white">Fractions fundamentals</p>
+                      <p className="text-xl font-bold text-white">{pulseGap}</p>
+                      {latestProgress && (
+                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-emerald-300">
+                          {levelMeta[latestProgress.level]?.label || latestProgress.level}
+                        </p>
+                      )}
                     </div>
-                    <span className="text-2xl">📘</span>
+                    <span className="text-2xl">{pulseIcon}</span>
                   </div>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Confidence</p>
-                    <p className="mt-2 text-3xl font-black text-white">78%</p>
+                    <p className="mt-2 text-3xl font-black text-white">
+                      {pulseConfidence}%
+                      {confidenceTrend !== null && confidenceTrend !== 0 && (
+                        <span className={`ml-2 text-sm font-semibold ${confidenceTrend > 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
+                          {confidenceTrend > 0 ? `+${confidenceTrend}` : confidenceTrend}
+                        </span>
+                      )}
+                    </p>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Mentor</p>
-                    <p className="mt-2 text-lg font-bold text-white">Aarav Sharma</p>
+                    <p className="mt-2 text-lg font-bold text-white">{pulseMentor}</p>
                   </div>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center justify-between text-sm text-slate-300">
                     <span>Learning path readiness</span>
-                    <span>92%</span>
+                    <span>{pulseReadiness}%</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-800">
-                    <div className="h-2 w-[92%] rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400" />
+                    <div
+                      className="h-2 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-700"
+                      style={{ width: `${pulseReadiness}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Sessions completed</p>
+                    <p className="mt-2 text-2xl font-black text-white">{sessionsCompleted}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Avg. confidence</p>
+                    <p className="mt-2 text-2xl font-black text-white">{averageConfidence !== null ? `${averageConfidence}%` : '—'}</p>
                   </div>
                 </div>
               </div>
@@ -601,9 +670,9 @@ export default function App() {
             <div>
               <p className="font-semibold text-white">Connect</p>
               <div className="mt-2 flex gap-3 text-lg">
-                <a href="#" className="hover:text-white">LinkedIn</a>
-                <a href="#" className="hover:text-white">Twitter</a>
-                <a href="#" className="hover:text-white">Email</a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">LinkedIn</a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">Twitter</a>
+                <a href="mailto:hello@pathai.com" className="hover:text-white">Email</a>
               </div>
             </div>
           </div>
