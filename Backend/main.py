@@ -1,7 +1,6 @@
 import os
 import random
 import pandas as pd
-import random
 from typing import TypedDict, Literal
 from dotenv import load_dotenv
 
@@ -35,10 +34,7 @@ except FileNotFoundError:
         "status": ["free", "free", "free", "busy"],
     })
 
-# Tracks the last mentor index handed out per subject so assignments rotate
-# fairly instead of always returning the same mentor first.
 mentor_rotation_state: dict[str, int] = {}
-# Tracks recently assigned mentors per subject so we can avoid an immediate repeat.
 recent_mentor_state: dict[str, list] = {}
 
 class StudentState(TypedDict):
@@ -120,34 +116,27 @@ def mentor_availability_node(state: StudentState) -> StudentState:
 
     candidates = mentors_df[(mentors_df["subject"] == subject) & (mentors_df["status"] == "free")]
     if candidates.empty:
-        # Fall back to any mentor for the subject rather than leaving the student stranded.
         candidates = mentors_df[mentors_df["subject"] == subject]
     if candidates.empty:
         return {**state, "assigned_mentor": "No mentor currently available for this subject"}
 
-    # Prefer mentors whose grade range covers the student's grade.
-    grade_matched = candidates[candidates["grade_range"].apply(lambda gr: _grade_in_range(gr, grade))]
+    grade_matched = candidates[candidates["grade_range"].apply(lambda gr: _grade_in_range(gr, grade))] if "grade_range" in candidates.columns else candidates
     pool = grade_matched if not grade_matched.empty else candidates
 
-    # Among those, prefer mentors who speak the student's preferred language.
     if "languages" in pool.columns:
         language_matched = pool[pool["languages"].str.contains(language, case=False, na=False)]
         if not language_matched.empty:
             pool = language_matched
 
     mentor_names = pool["mentor_name"].tolist()
-
-    # Avoid immediately repeating a mentor this subject just used, when alternatives exist.
     recently_used = recent_mentor_state.get(subject, [])
     fresh_names = [name for name in mentor_names if name not in recently_used] or mentor_names
 
-    # Rotate fairly through the pool instead of always picking the first match,
-    # with a touch of randomness so simultaneous students don't get identical assignments.
     idx = (mentor_rotation_state.get(subject, -1) + 1) % len(fresh_names)
     mentor_rotation_state[subject] = idx
     mentor = fresh_names[idx] if random.random() > 0.15 else random.choice(fresh_names)
 
-    recently_used = (recently_used + [mentor])[-2:]  # remember up to the last 2 mentors used
+    recently_used = (recently_used + [mentor])[-2:]
     recent_mentor_state[subject] = recently_used
 
     return {**state, "assigned_mentor": mentor}
