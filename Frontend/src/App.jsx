@@ -295,7 +295,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="features" className="reveal py-10 lg:py-14">
+        <section id="features" className="reveal py-10 lg:py-14 scroll-mt-28">
           <div className="mb-8 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Why students love it</p>
             <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">A landing page built around clarity, trust, and momentum.</h2>
@@ -312,7 +312,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="testimonials" className="reveal py-10 lg:py-14">
+        <section id="testimonials" className="reveal py-10 lg:py-14 scroll-mt-28">
           <div className="mb-8 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">Testimonials</p>
             <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">Real feedback from learners and educators.</h2>
@@ -349,7 +349,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="pricing" className="reveal py-10 lg:py-14">
+        <section id="pricing" className="reveal py-10 lg:py-14 scroll-mt-28">
           <div className="mb-8 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Pricing</p>
             <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">Choose the plan that fits your learning momentum.</h2>
@@ -359,18 +359,16 @@ export default function App() {
             <button
               type="button"
               onClick={() => setBillingCycle('monthly')}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                billingCycle === 'monthly' ? 'bg-emerald-400 text-slate-950' : 'text-slate-300'
-              }`}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${billingCycle === 'monthly' ? 'bg-emerald-400 text-slate-950' : 'text-slate-300'
+                }`}
             >
               Monthly
             </button>
             <button
               type="button"
               onClick={() => setBillingCycle('yearly')}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                billingCycle === 'yearly' ? 'bg-emerald-400 text-slate-950' : 'text-slate-300'
-              }`}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${billingCycle === 'yearly' ? 'bg-emerald-400 text-slate-950' : 'text-slate-300'
+                }`}
             >
               Yearly
             </button>
@@ -380,11 +378,10 @@ export default function App() {
             {pricingPlans.map((plan) => (
               <article
                 key={plan.name}
-                className={`rounded-[28px] border p-6 backdrop-blur-xl ${
-                  plan.featured
+                className={`rounded-[28px] border p-6 backdrop-blur-xl ${plan.featured
                     ? 'border-emerald-300/40 bg-gradient-to-b from-emerald-400/10 to-cyan-400/10 shadow-xl shadow-emerald-500/10'
                     : 'border-white/10 bg-white/5'
-                }`}
+                  }`}
               >
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-bold text-white">{plan.name}</h3>
@@ -409,11 +406,10 @@ export default function App() {
                 </ul>
                 <a
                   href="#generator"
-                  className={`mt-6 inline-flex rounded-full px-4 py-2 text-sm font-bold transition ${
-                    plan.featured
+                  className={`mt-6 inline-flex rounded-full px-4 py-2 text-sm font-bold transition ${plan.featured
                       ? 'bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950'
                       : 'border border-white/15 bg-white/5 text-white hover:bg-white/10'
-                  }`}
+                    }`}
                 >
                   Choose {plan.name}
                 </a>
@@ -462,7 +458,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="generator" className="reveal py-8 lg:py-12">
+        <section id="generator" className="reveal py-8 lg:py-12 scoll-mt-28">
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">Launch the journey</p>
