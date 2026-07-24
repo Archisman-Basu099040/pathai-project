@@ -20,9 +20,9 @@ const featureCards = [
 ];
 
 const stats = [
-  { label: 'Concepts mapped', value: '9' },
-  { label: 'Students supported', value: '15' },
-  { label: 'Avg. response time', value: '< 6s' }
+  { label: 'Syllabus topics', value: '9' },
+  { label: 'Mock mentors', value: '15' },
+  { label: 'AI Engine', value: 'Llama 3.3' }
 ];
 
 const subjectIcon = {
@@ -50,6 +50,7 @@ export default function App() {
   const isDark = true;
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
+  // Pick a random default mentor for the preview card on load
   const [previewMentor] = useState(() => {
     const sampleMentors = ["Dr. Ananya Sharma", "Mr. Rohan Chatterjee", "Ms. Priya Rao", "Dr. Tariq Iqbal", "Ms. Sunita Devi"];
     return sampleMentors[Math.floor(Math.random() * sampleMentors.length)];
@@ -134,7 +135,7 @@ export default function App() {
       <div className="absolute bottom-[-120px] right-[-80px] h-96 w-96 rounded-full bg-cyan-500/20 blur-3xl" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-6">
-        <header className="sticky top-4 z-50 mb-10 flex items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
+        <header className="sticky top-4 z-50 mb-10 flex items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl relative">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 text-lg font-bold text-slate-950">P</div>
             <div>
@@ -143,9 +144,9 @@ export default function App() {
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm text-slate-300">
-            <a href="#features" className="hover:text-white">Features</a>
-            <a href="#generator" className="hover:text-white">Generator</a>
+          <nav className="hidden md:flex items-center gap-6 text-sm text-slate-300 absolute left-1/2 -translate-x-1/2">
+            <a href="#features" className="hover:text-white transition">Features</a>
+            <a href="#generator" className="hover:text-white transition">Generator</a>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -272,7 +273,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="features" className="reveal py-10 lg:py-14" style={{ scrollMarginTop: '100px' }}>
+        <section id="features" className="reveal py-10 lg:py-14 scroll-mt-32">
           <div className="mb-8 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Why students love it</p>
             <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">A landing page built around clarity, trust, and momentum.</h2>
@@ -300,7 +301,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="generator" className="reveal py-8 lg:py-12 scroll-mt-28">
+        <section id="generator" className="reveal py-8 lg:py-12 scroll-mt-32">
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">Launch the journey</p>
@@ -310,7 +311,7 @@ export default function App() {
               <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                 <div>
                   <label className="mb-2 block text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Student name</label>
-                  <input required type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Aarav Sharma" className="pathai-input" />
+                  <input required type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter student name" className="pathai-input" />
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
