@@ -25,6 +25,80 @@ const stats = [
   { label: 'AI Engine', value: 'Llama 3.3' }
 ];
 
+const testimonials = [
+  {
+    quote: 'PathAI helped our daughter go from panic to confidence in one weekend. The learning path felt personal, not generic.',
+    name: 'Priya S.',
+    role: 'Parent of Grade 8 student'
+  },
+  {
+    quote: 'The interface is clean, and the guidance feels like a smart tutor who knows exactly where the confusion starts.',
+    name: 'Rohan K.',
+    role: 'STEM educator'
+  },
+  {
+    quote: 'We used it for revision before exams, and the explanations were so targeted that my class started asking for it by name.',
+    name: 'Maya T.',
+    role: 'Classroom coordinator'
+  }
+];
+
+const pricingPlans = [
+  {
+    name: 'Starter',
+    monthly: '$0',
+    yearly: '$0',
+    description: 'Perfect for trying the AI learning flow with limited sessions.',
+    features: ['1 guided learning path per week', 'Basic mentor matching', 'Community support'],
+    featured: false
+  },
+  {
+    name: 'Pro',
+    monthly: '$19',
+    yearly: '$190',
+    description: 'For students who want consistent, structured help every week.',
+    features: ['Unlimited learning paths', 'Priority mentor routing', 'Advanced concept diagnostics'],
+    featured: true
+  },
+  {
+    name: 'School',
+    monthly: '$79',
+    yearly: '$790',
+    description: 'For classrooms and coaching groups seeking a scalable learning assistant.',
+    features: ['Classroom dashboard', 'Multi-student tracking', 'Dedicated onboarding'],
+    featured: false
+  }
+];
+
+const logoCloud = ['EduSpark', 'Bright Labs', 'SkillForge', 'NextClass', 'MentorNest'];
+
+const levelMeta = {
+  foundational: { confidence: 52, readiness: 58, label: 'Foundational rebuild' },
+  grade_level: { confidence: 76, readiness: 84, label: 'Grade-level focus' },
+  advanced: { confidence: 94, readiness: 97, label: 'Advanced extension' }
+};
+
+const subjectIcon = {
+  math: '📘',
+  science: '🧪',
+  english: '📝'
+};
+
+const faqItems = [
+  {
+    question: 'Who is PathAI built for?',
+    answer: 'PathAI is designed for students, tutors, and classroom teams that need a clearer, faster way to diagnose learning gaps and build step-by-step support.'
+  },
+  {
+    question: 'Does PathAI replace the teacher?',
+    answer: 'No. It complements teachers and mentors by generating adaptive guidance, checking understanding, and helping students move forward faster.'
+  },
+  {
+    question: 'Can I use it for multiple subjects?',
+    answer: 'Yes. The intake flow supports subject, grade, language, and topic signals so the response can be shaped for different study contexts.'
+  }
+];
+
 export default function App() {
   const [formData, setFormData] = useState({
     name: '',
@@ -38,10 +112,12 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [themeMode, setThemeMode] = useState('dark');
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [billingCycle, setBillingCycle] = useState('monthly');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [progressHistory, setProgressHistory] = useState([]);
 
-  const isDark = themeMode === 'dark';
+  const isDark = true;
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   // Pick a random default mentor for the preview card on load
@@ -92,12 +168,45 @@ export default function App() {
 
       const data = await response.json();
       setResult(data);
+
+      const meta = levelMeta[data.level] || levelMeta.grade_level;
+      setProgressHistory((prev) => [
+        ...prev,
+        {
+          topic: data.topic || formData.topic,
+          subject: data.subject || formData.subject,
+          level: data.level,
+          mentor: data.assigned_mentor,
+          confidence: meta.confidence,
+          readiness: meta.readiness,
+          timestamp: Date.now()
+        }
+      ]);
     } catch (err) {
       setError(err.message || 'Failed to connect to PathAI backend server.');
     } finally {
       setLoading(false);
     }
   };
+
+  const latestProgress = progressHistory[progressHistory.length - 1] || null;
+  const sessionsCompleted = progressHistory.length;
+  const averageConfidence = sessionsCompleted
+    ? Math.round(progressHistory.reduce((sum, item) => sum + item.confidence, 0) / sessionsCompleted)
+    : null;
+  const previousConfidence = sessionsCompleted > 1 ? progressHistory[sessionsCompleted - 2].confidence : null;
+  const confidenceTrend =
+    latestProgress && previousConfidence !== null ? latestProgress.confidence - previousConfidence : null;
+
+  const pulseGap = latestProgress ? latestProgress.topic : 'Fractions fundamentals';
+  const pulseIcon = latestProgress ? subjectIcon[latestProgress.subject] || '📘' : '📘';
+  const pulseConfidence = latestProgress ? latestProgress.confidence : 78;
+  const pulseMentor = latestProgress
+    ? latestProgress.mentor && latestProgress.mentor.startsWith('Not needed')
+      ? 'Self-serve path'
+      : latestProgress.mentor
+    : 'Aarav Sharma';
+  const pulseReadiness = latestProgress ? latestProgress.readiness : 92;
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'} relative overflow-hidden selection:bg-emerald-400/30`}>
@@ -186,7 +295,13 @@ export default function App() {
                   <p className="text-xs uppercase tracking-[0.24em] text-cyan-300">Learning pulse</p>
                   <p className="mt-1 text-lg font-semibold text-white">Student progress preview</p>
                 </div>
-                <div className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300">Live</div>
+                <div
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                    latestProgress ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-300'
+                  }`}
+                >
+                  {latestProgress ? 'Live' : 'Preview'}
+                </div>
               </div>
 
               <div className="space-y-3">
@@ -197,8 +312,14 @@ export default function App() {
                       <p className="text-xl font-bold text-white">
                         {result ? `${result.level.replace('_', ' ')}: ${formData.topic || 'General'}` : '--'}
                       </p>
+                      <p className="text-xl font-bold text-white">{pulseGap}</p>
+                      {latestProgress && (
+                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-emerald-300">
+                          {levelMeta[latestProgress.level]?.label || latestProgress.level}
+                        </p>
+                      )}
                     </div>
-                    <span className="text-2xl">📘</span>
+                    <span className="text-2xl">{pulseIcon}</span>
                   </div>
                 </div>
 
@@ -207,6 +328,12 @@ export default function App() {
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Confidence</p>
                     <p className="mt-2 text-3xl font-black text-white">
                       {result ? `${result.confidence}%` : '--'}
+                      {pulseConfidence}%
+                      {confidenceTrend !== null && confidenceTrend !== 0 && (
+                        <span className={`ml-2 text-sm font-semibold ${confidenceTrend > 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
+                          {confidenceTrend > 0 ? `+${confidenceTrend}` : confidenceTrend}
+                        </span>
+                      )}
                     </p>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -214,6 +341,7 @@ export default function App() {
                     <p className="mt-2 text-lg font-bold text-white">
                       {result ? result.assigned_mentor : previewMentor}
                     </p>
+                    <p className="mt-2 text-lg font-bold text-white">{pulseMentor}</p>
                   </div>
                 </div>
 
@@ -235,6 +363,24 @@ export default function App() {
                           : '92%'
                       }}
                     />
+                    <span>{pulseReadiness}%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-800">
+                    <div
+                      className="h-2 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-700"
+                      style={{ width: `${pulseReadiness}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Sessions completed</p>
+                    <p className="mt-2 text-2xl font-black text-white">{sessionsCompleted}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Avg. confidence</p>
+                    <p className="mt-2 text-2xl font-black text-white">{averageConfidence !== null ? `${averageConfidence}%` : '—'}</p>
                   </div>
                 </div>
               </div>
@@ -408,9 +554,9 @@ export default function App() {
             <div>
               <p className="font-semibold text-white">Connect</p>
               <div className="mt-2 flex gap-3 text-lg">
-                <a href="#" className="hover:text-white">LinkedIn</a>
-                <a href="#" className="hover:text-white">Twitter</a>
-                <a href="#" className="hover:text-white">Email</a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">LinkedIn</a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">Twitter</a>
+                <a href="mailto:hello@pathai.com" className="hover:text-white">Email</a>
               </div>
             </div>
           </div>
