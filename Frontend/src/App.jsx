@@ -20,9 +20,9 @@ const featureCards = [
 ];
 
 const stats = [
-  { label: 'Concepts mapped', value: '24k+' },
-  { label: 'Students supported', value: '3.8k' },
-  { label: 'Avg. response time', value: '< 20s' }
+  { label: 'Syllabus topics', value: '9' },
+  { label: 'Mock mentors', value: '15' },
+  { label: 'AI Engine', value: 'Llama 3.3' }
 ];
 
 export default function App() {
@@ -43,6 +43,12 @@ export default function App() {
 
   const isDark = themeMode === 'dark';
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+  // Pick a random default mentor for the preview card on load
+  const [previewMentor] = useState(() => {
+    const sampleMentors = ["Dr. Ananya Sharma", "Mr. Rohan Chatterjee", "Ms. Priya Rao", "Dr. Tariq Iqbal", "Ms. Sunita Devi"];
+    return sampleMentors[Math.floor(Math.random() * sampleMentors.length)];
+  });
 
   useEffect(() => {
     const elements = document.querySelectorAll('.reveal');
@@ -201,17 +207,30 @@ export default function App() {
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Mentor</p>
-                    <p className="mt-2 text-lg font-bold text-white">Aarav Sharma</p>
+                    <p className="mt-2 text-lg font-bold text-white">
+                      {result ? result.assigned_mentor : previewMentor}
+                    </p>
                   </div>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center justify-between text-sm text-slate-300">
                     <span>Learning path readiness</span>
-                    <span>92%</span>
+                    <span>
+                      {result
+                        ? (result.level === 'foundational' ? '65%' : result.level === 'grade_level' ? '82%' : '95%')
+                        : '92%'}
+                    </span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-800">
-                    <div className="h-2 w-[92%] rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400" />
+                    <div
+                      className="h-2 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-500"
+                      style={{
+                        width: result
+                          ? (result.level === 'foundational' ? '65%' : result.level === 'grade_level' ? '82%' : '95%')
+                          : '92%'
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -219,7 +238,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="features" className="reveal py-10 lg:py-14 scroll-mt-28">
+        <section id="features" className="reveal py-10 lg:py-14 scroll-mt-32">
           <div className="mb-8 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Why students love it</p>
             <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">A landing page built around clarity, trust, and momentum.</h2>
@@ -247,7 +266,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="generator" className="reveal py-8 lg:py-12 scoll-mt-28">
+        <section id="generator" className="reveal py-8 lg:py-12 scroll-mt-32">
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">Launch the journey</p>
@@ -257,7 +276,7 @@ export default function App() {
               <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                 <div>
                   <label className="mb-2 block text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Student name</label>
-                  <input required type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Aarav Sharma" className="pathai-input" />
+                  <input required type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter student name" className="pathai-input" />
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
