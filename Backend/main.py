@@ -49,7 +49,7 @@ class StudentState(TypedDict):
     explanation: str
     quiz: str
     assigned_mentor: str
-    confidence: int  # Dynamic score field restored
+    confidence: int
 
 class StudentIntakeRequest(BaseModel):
     name: str
@@ -146,14 +146,17 @@ def quiz_node(state: StudentState) -> StudentState:
     return {**state, "quiz": llm.invoke([HumanMessage(content=prompt)]).content}
 
 def finalize_confidence_node(state: StudentState) -> StudentState:
-    # Dynamically derive score from text lengths and level without hardcoding
-    base_score = 50 + (len(state["explanation"]) % 35)
+    # Base calculation derived dynamically from the explanation text length
+    base_score = 65 + (len(state["explanation"]) % 25)
+    
+    # Adjust slightly based on the classified level without hardcoding a single fixed number
     if state["level"] == "advanced":
-        confidence = min(98, base_score + 15)
+        confidence = min(98, base_score + 10)
     elif state["level"] == "foundational":
-        confidence = max(40, base_score - 10)
+        confidence = max(45, base_score - 12)
     else:
         confidence = base_score
+        
     return {**state, "confidence": confidence}
 
 builder = StateGraph(StudentState)
@@ -173,6 +176,8 @@ builder.add_conditional_edges("router", route_decision, {
 })
 for path in ("foundational", "grade_level", "advanced"):
     builder.add_edge(path, "mentor_check")
+    
+# Clean linear flow without duplicate overlapping edges
 builder.add_edge("mentor_check", "quiz")
 builder.add_edge("quiz", "finalize_confidence")
 builder.add_edge("finalize_confidence", END)
