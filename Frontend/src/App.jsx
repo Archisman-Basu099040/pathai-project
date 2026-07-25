@@ -216,8 +216,7 @@ export default function App() {
                   <p className="mt-1 text-lg font-semibold text-white">Student progress preview</p>
                 </div>
                 <div
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${result ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-300'
-                    }`}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${result ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-300'}`}
                 >
                   {result ? 'Live' : 'Preview'}
                 </div>
@@ -319,7 +318,8 @@ export default function App() {
                     <label className="mb-2 block text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Grade</label>
                     <select required name="grade" value={formData.grade} onChange={handleChange} className="pathai-input">
                       <option value="" disabled>Select grade</option>
-                      {[5, 6, 7, 8, 9, 10, 11, 12].map((g) => (
+                      {/* Updated to match curriculum map grades [6, 8, 10] */}
+                      {[6, 8, 10].map((g) => (
                         <option key={g} value={g}>Grade {g}</option>
                       ))}
                     </select>
